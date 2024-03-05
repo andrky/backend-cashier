@@ -6,7 +6,7 @@
 // var indexRouter = require('./routes/index');
 // var usersRouter = require('./routes/users');
 
-// Import package
+// Import library
 // dotenv untuk koneksi dengan semua yang berhubungan dengan .env
 // mongoose untuk koneksi dengan database mongodb
 import express from 'express';

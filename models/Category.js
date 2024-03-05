@@ -1,5 +1,7 @@
+// Import library mongoose
 import mongoose from 'mongoose';
 
+// Buat model schema untuk field category
 const Schema = mongoose.Schema(
 	{
 		title: {
