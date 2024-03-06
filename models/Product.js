@@ -37,7 +37,7 @@ const Schema = mongoose.Schema(
 Schema.virtual('categories', {
 	ref: 'category',
 	localField: 'categoryId',
-	foreignId: '_id',
+	foreignField: '_id',
 });
 
 export default mongoose.model('Product', Schema);

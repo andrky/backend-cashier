@@ -3,10 +3,10 @@ import { index, store } from '../controllers/ProductController.js';
 
 var router = express.Router();
 
-// Get data categories from db
+// Get data products from db
 router.get('/', index);
 
-// Post data category to db
+// Post data products to db
 router.post('/', store);
 
 export default router;

@@ -46,7 +46,7 @@ const store = async (req, res) => {
 		// Membuat await untuk melakukan store data ke db
 		const category = await newCategory.save();
 
-		// Jika data pada Category kosong
+		// Jika data pada category kosong
 		if (!category) {
 			throw { code: 500, message: 'Store category failed' };
 		}
