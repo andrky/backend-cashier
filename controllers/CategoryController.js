@@ -1,7 +1,33 @@
-// Import model schema category
-import category from '../models/Category.js';
+// Import model schema Category
+import Category from '../models/Category.js';
 
-// Membuat async
+// Membuat get data
+const index = async (req, res) => {
+	try {
+		// Membuat await untuk melakukan get data dari db
+		const categories = await Category.find();
+
+		// Jika data pada categories kosong
+		if (!categories) {
+			throw { code: 500, message: 'Get categories failed' };
+		}
+
+		// Jika berhasil store return respon 200
+		return res.status(200).json({
+			status: true,
+			total: categories.length,
+			categories,
+		});
+	} catch (error) {
+		// Jika gagal store return
+		return res.status(error.code).json({
+			status: false,
+			message: error.message,
+		});
+	}
+};
+
+// Membuat post data
 const store = async (req, res) => {
 	try {
 		// Kondisi jika ada req pada title kosong
@@ -13,22 +39,22 @@ const store = async (req, res) => {
 		const title = req.body.title;
 
 		// Simpan req berdasarkan category ke dalam model schema
-		const newCategory = new category({
+		const newCategory = new Category({
 			title: title,
 		});
 
 		// Membuat await untuk melakukan store data ke db
-		const Category = await newCategory.save();
+		const category = await newCategory.save();
 
 		// Jika data pada Category kosong
-		if (!Category) {
+		if (!category) {
 			throw { code: 500, message: 'Store category failed' };
 		}
 
 		// Jika berhasil store return respon 200
 		return res.status(200).json({
 			status: true,
-			Category,
+			category,
 		});
 	} catch (error) {
 		// Jika gagal store return
@@ -39,4 +65,4 @@ const store = async (req, res) => {
 	}
 };
 
-export { store };
+export { index, store };
