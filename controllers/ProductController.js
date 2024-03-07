@@ -1,5 +1,6 @@
 // Import model schema Category
 import Product from '../models/Product.js';
+import Category from '../models/Category.js';
 
 // Membuat get data
 const index = async (req, res) => {
@@ -39,6 +40,12 @@ const store = async (req, res) => {
 			throw { code: 428, message: 'Product is exist!' };
 		}
 
+		// Jika _id pada category tidak sesuai berdasarkan req.body.categoryId
+		const categoryExist = await Category.findOne({ _id: req.body.categoryId });
+		if (!categoryExist) {
+			throw { code: 428, message: 'Category is not available!' };
+		}
+
 		// Simpan req body
 		const title = req.body.title;
 		const thumbnail = req.body.thumbnail;
@@ -67,6 +74,9 @@ const store = async (req, res) => {
 			product,
 		});
 	} catch (error) {
+		if (!error.code) {
+			error.code = 500;
+		}
 		// Jika gagal store return
 		return res.status(error.code).json({
 			status: false,
