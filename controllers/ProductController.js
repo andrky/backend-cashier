@@ -33,6 +33,12 @@ const store = async (req, res) => {
 			throw { code: 428, message: 'Field is required!' };
 		}
 
+		// Jika product berdasarkan title sudah ada
+		const productExist = await Product.findOne({ title: req.body.title });
+		if (productExist) {
+			throw { code: 428, message: 'Product is exist!' };
+		}
+
 		// Simpan req body
 		const title = req.body.title;
 		const thumbnail = req.body.thumbnail;
