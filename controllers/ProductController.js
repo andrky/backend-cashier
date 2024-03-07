@@ -28,10 +28,10 @@ const index = async (req, res) => {
 // Membuat post data
 const store = async (req, res) => {
 	try {
-		// Kondisi jika ada req pada title kosong
-		// if (!req.body.title) {
-		// 	throw { code: 428, message: 'Field is required!' };
-		// }
+		// isRequired jika ada req.body pada kosong
+		if (!req.body.title || !req.body.thumbnail || !req.body.price || !req.body.categoryId) {
+			throw { code: 428, message: 'Field is required!' };
+		}
 
 		// Simpan req body
 		const title = req.body.title;

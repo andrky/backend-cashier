@@ -7,7 +7,7 @@ const index = async (req, res) => {
 		// Membuat await untuk melakukan get data dari db
 		const categories = await Category.find();
 
-		// Jika data pada categories kosong
+		// isRequired, jika data pada categories kosong
 		if (!categories) {
 			throw { code: 500, message: 'Get categories failed' };
 		}
