@@ -1,6 +1,7 @@
 // Import model schema Category
 import Product from '../models/Product.js';
 import Category from '../models/Category.js';
+import mongoose from 'mongoose';
 
 // Membuat get data
 const index = async (req, res) => {
@@ -31,19 +32,24 @@ const store = async (req, res) => {
 	try {
 		// isRequired jika ada req.body pada kosong
 		if (!req.body.title || !req.body.thumbnail || !req.body.price || !req.body.categoryId) {
-			throw { code: 428, message: 'Field is required!' };
+			throw { code: 428, message: 'FIELD_REQUIRED' };
 		}
 
 		// Jika product berdasarkan title sudah ada
 		const productExist = await Product.findOne({ title: req.body.title });
 		if (productExist) {
-			throw { code: 428, message: 'Product is exist!' };
+			throw { code: 428, message: 'PRODUCT_EXIST' };
 		}
 
 		// Jika _id pada category tidak sesuai berdasarkan req.body.categoryId
+		if (!mongoose.Types.ObjectId.isValid(req.body.categoryId)) {
+			throw { code: 500, message: 'CATEGORY_INVALID' };
+		}
+
+		// Jika _id pada category tidak ada berdasarkan req.body.categoryId
 		const categoryExist = await Category.findOne({ _id: req.body.categoryId });
 		if (!categoryExist) {
-			throw { code: 428, message: 'Category is not available!' };
+			throw { code: 428, message: 'CATEGORY_EXIST!' };
 		}
 
 		// Simpan req body
@@ -65,7 +71,7 @@ const store = async (req, res) => {
 
 		// Jika data pada product kosong
 		if (!product) {
-			throw { code: 500, message: 'Store product failed' };
+			throw { code: 500, message: 'STORE_PRODUCT_FAILED' };
 		}
 
 		// Jika berhasil store return respon 200

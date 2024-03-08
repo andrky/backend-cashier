@@ -9,7 +9,7 @@ const index = async (req, res) => {
 
 		// isRequired, jika data pada categories kosong
 		if (!categories) {
-			throw { code: 500, message: 'Get categories failed' };
+			throw { code: 500, message: 'GET_CATEGORIES_FAILED' };
 		}
 
 		// Jika berhasil store return respon 200
@@ -32,7 +32,7 @@ const store = async (req, res) => {
 	try {
 		// Kondisi jika ada req pada title kosong
 		if (!req.body.title) {
-			throw { code: 428, message: 'Field is required!' };
+			throw { code: 428, message: 'FIELD_REQUIRED' };
 		}
 
 		// Simpan req body
@@ -48,7 +48,7 @@ const store = async (req, res) => {
 
 		// Jika data pada category kosong
 		if (!category) {
-			throw { code: 500, message: 'Store category failed' };
+			throw { code: 500, message: 'STORE_CATEGORY_FAILED' };
 		}
 
 		// Jika berhasil store return respon 200
