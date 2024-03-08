@@ -5,26 +5,26 @@ import mongoose from 'mongoose';
 
 // Membuat get data
 const index = async (req, res) => {
-	// try {
-	// 	// Membuat await untuk melakukan get data dari db
-	// 	const categories = await Category.find();
-	// 	// Jika data pada categories kosong
-	// 	if (!categories) {
-	// 		throw { code: 500, message: 'Get categories failed' };
-	// 	}
-	// 	// Jika berhasil store return respon 200
-	// 	return res.status(200).json({
-	// 		status: true,
-	// 		total: categories.length,
-	// 		categories,
-	// 	});
-	// } catch (error) {
-	// 	// Jika gagal store return
-	// 	return res.status(error.code).json({
-	// 		status: false,
-	// 		message: error.message,
-	// 	});
-	// }
+	try {
+		// Membuat await untuk melakukan get data dari db
+		const products = await Product.find({ status: 'active' });
+		// Jika data pada categories kosong
+		if (!products) {
+			throw { code: 500, message: 'Get categories failed' };
+		}
+		// Jika berhasil store return respon 200
+		return res.status(200).json({
+			status: true,
+			total: products.length,
+			products,
+		});
+	} catch (error) {
+		// Jika gagal store return
+		return res.status(error.code).json({
+			status: false,
+			message: error.message,
+		});
+	}
 };
 
 // Membuat post data

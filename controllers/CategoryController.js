@@ -5,7 +5,7 @@ import Category from '../models/Category.js';
 const index = async (req, res) => {
 	try {
 		// Membuat await untuk melakukan get data dari db
-		const categories = await Category.find();
+		const categories = await Category.find({ status: 'active' });
 
 		// isRequired, jika data pada categories kosong
 		if (!categories) {
