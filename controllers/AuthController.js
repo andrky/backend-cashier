@@ -15,6 +15,11 @@ const register = async (req, res) => {
 			throw { code: 428, message: 'Password is required' };
 		}
 
+		// Cek password harus sama
+		if (req.body.password !== req.body.retype_password) {
+			throw { code: 428, message: 'Password and password confirmation must match' };
+		}
+
 		// Simpan req berdasarkan data register user ke dalam model schema
 		const newUser = new User({
 			fullname: req.body.fullname,
