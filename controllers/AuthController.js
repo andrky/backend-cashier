@@ -1,5 +1,7 @@
 // Import model schema User
 import User from '../models/User.js';
+// Import library hash password
+import bcrypt from 'bcrypt';
 
 // Membuat post data
 const register = async (req, res) => {
@@ -26,11 +28,15 @@ const register = async (req, res) => {
 			throw { code: 428, message: 'PASSWORD_MUST_MATCH' };
 		}
 
+		// Hash password menggunakan bcrypt
+		let salt = await bcrypt.genSalt(10);
+		let hash = await bcrypt.hash(req.body.password, salt);
+
 		// Simpan req berdasarkan data register user ke dalam model schema
 		const newUser = new User({
 			fullname: req.body.fullname,
 			email: req.body.email,
-			password: req.body.password,
+			password: hash,
 			role: req.body.role,
 		});
 
