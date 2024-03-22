@@ -38,7 +38,7 @@ const store = async (req, res) => {
 		// Jika product berdasarkan title sudah ada
 		const productExist = await Product.findOne({ title: req.body.title });
 		if (productExist) {
-			throw { code: 428, message: 'PRODUCT_EXIST' };
+			throw { code: 409, message: 'PRODUCT_EXIST' };
 		}
 
 		// Jika _id pada category tidak sesuai berdasarkan req.body.categoryId

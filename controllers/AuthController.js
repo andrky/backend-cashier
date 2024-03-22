@@ -15,9 +15,15 @@ const register = async (req, res) => {
 			throw { code: 428, message: 'Password is required' };
 		}
 
+		// Cek email sudah ada
+		const emailExist = await User.findOne({ email: req.body.email });
+		if (emailExist) {
+			throw { code: 409, message: 'EMAIL_EXIST' };
+		}
+
 		// Cek password harus sama
 		if (req.body.password !== req.body.retype_password) {
-			throw { code: 428, message: 'Password and password confirmation must match' };
+			throw { code: 428, message: 'PASSWORD_MUST_MATCH' };
 		}
 
 		// Simpan req berdasarkan data register user ke dalam model schema
