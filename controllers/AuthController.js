@@ -3,7 +3,7 @@ import User from '../models/User.js';
 // Import library hash password
 import bcrypt from 'bcrypt';
 
-// Membuat post data
+// Membuat register post data
 const register = async (req, res) => {
 	try {
 		// Kondisi jika ada req pada fullname, email dan password kosong
@@ -51,6 +51,7 @@ const register = async (req, res) => {
 		// Jika berhasil store return respon 200
 		return res.status(200).json({
 			status: true,
+			message: 'USER_REGISTER_SUCCESS',
 			user,
 		});
 	} catch (error) {
@@ -66,4 +67,46 @@ const register = async (req, res) => {
 	}
 };
 
-export { register };
+// Membuat login
+const login = async (req, res) => {
+	try {
+		// Kondisi jika ada req pada email dan password kosong
+		if (!req.body.email) {
+			throw { code: 428, message: 'Email is required' };
+		}
+		if (!req.body.password) {
+			throw { code: 428, message: 'Password is required' };
+		}
+
+		// Cek user sudah ada berdasarkan email di database
+		const user = await User.findOne({ email: req.body.email });
+		if (!user) {
+			throw { code: 404, message: 'USER_NOT_FOUND' };
+		}
+
+		// Cek password sama atau tidak dengan di database
+		const passwordIsMatch = await bcrypt.compareSync(req.body.password, user.password);
+		if (!passwordIsMatch) {
+			throw { code: 409, message: 'PASSWORD_WRONG' };
+		}
+
+		// Jika berhasil store return respon 200
+		return res.status(200).json({
+			status: true,
+			message: 'LOGIN_SUCCESS',
+			user,
+		});
+	} catch (error) {
+		// Jika error code tidak ada di set ke 500
+		if (!error.code) {
+			error.code = 500;
+		}
+		// Jika gagal store return
+		return res.status(error.code).json({
+			status: false,
+			message: error.message,
+		});
+	}
+};
+
+export { register, login };
