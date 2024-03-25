@@ -2,6 +2,21 @@
 import User from '../models/User.js';
 // Import library hash password
 import bcrypt from 'bcrypt';
+// Import jwt
+import jsonwebtoken from 'jsonwebtoken';
+// Import dotenv untuk akses var yang berada di .env
+import dotenv from 'dotenv';
+const env = dotenv.config().parsed;
+
+// Function untuk generate access token berdasarkan payload yang dibuat
+const generateAccessToken = async (payload) => {
+	return jsonwebtoken.sign(payload, env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: env.JWT_ACCESS_TOKEN_LIFE });
+};
+
+// Function untuk generate refresh token berdasarkan payload yang dibuat
+const generateRereshToken = async (payload) => {
+	return jsonwebtoken.sign(payload, env.JWT_REFRESH_TOKEN_SECRET, { expiresIn: env.JWT_REFRESH_TOKEN_LIFE });
+};
 
 // Membuat register post data
 const register = async (req, res) => {
@@ -90,11 +105,20 @@ const login = async (req, res) => {
 			throw { code: 409, message: 'PASSWORD_WRONG' };
 		}
 
+		// Generate token
+		const payload = {
+			id: user._id,
+			role: user.role,
+		};
+		const accessToken = await generateAccessToken(payload);
+		const refreshToken = await generateRereshToken(payload);
+
 		// Jika berhasil store return respon 200
 		return res.status(200).json({
 			status: true,
 			message: 'LOGIN_SUCCESS',
-			user,
+			accessToken,
+			refreshToken,
 		});
 	} catch (error) {
 		// Jika error code tidak ada di set ke 500
