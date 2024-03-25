@@ -133,4 +133,43 @@ const login = async (req, res) => {
 	}
 };
 
-export { register, login };
+// Verifikasi token
+const refreshToken = async (req, res) => {
+	try {
+		// Kondisi jika ada req pada refreshToken kosong
+		if (!req.body.refreshToken) {
+			throw { code: 428, message: 'Refresh Token is required' };
+		}
+
+		// Verifikasi token
+		const verify = await jsonwebtoken.verify(req.body.refreshToken, env.JWT_REFRESH_TOKEN_SECRET);
+		if (!verify) {
+			throw { code: 428, message: 'REFRESH_TOKEN_INVALID' };
+		}
+
+		// Generate token
+		let payload = { id: verify.id, role: verify.role };
+		const accessToken = await generateAccessToken(payload);
+		const refreshToken = await generateRereshToken(payload);
+
+		// Jika berhasil store return respon 200
+		return res.status(200).json({
+			status: true,
+			message: 'LOGIN_SUCCESS',
+			accessToken,
+			refreshToken,
+		});
+	} catch (error) {
+		// Jika error code tidak ada di set ke 500
+		if (!error.code) {
+			error.code = 500;
+		}
+		// Jika gagal store return
+		return res.status(error.code).json({
+			status: false,
+			message: error.message,
+		});
+	}
+};
+
+export { register, login, refreshToken };
