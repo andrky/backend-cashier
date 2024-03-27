@@ -18,6 +18,35 @@ const generateRereshToken = async (payload) => {
 	return jsonwebtoken.sign(payload, env.JWT_REFRESH_TOKEN_SECRET, { expiresIn: env.JWT_REFRESH_TOKEN_LIFE });
 };
 
+// Cek email sudah ada atau belum berdasarkan req yang dikirimkan terhadap data pada db
+const isEmailExist = async (email) => {
+	const user = await User.findOne({ email });
+	if (!user) {
+		return false;
+	}
+	return true;
+};
+
+// Fungsi cek email untuk melakukan pengecekan email sudah terdaftar atau belum menggunakan api
+const checkEmail = async (req, res) => {
+	try {
+		// Cek email sudah ada
+		const email = await isEmailExist(req.body.email);
+		if (email) {
+			throw { code: 409, message: 'EMAIL_EXIST' };
+		}
+		res.status(200).json({
+			status: true,
+			message: 'EMAIL_NOT_EXIST',
+		});
+	} catch (error) {
+		res.status(error.code).json({
+			status: false,
+			message: error.message,
+		});
+	}
+};
+
 // Membuat register post data
 const register = async (req, res) => {
 	try {
@@ -32,9 +61,9 @@ const register = async (req, res) => {
 			throw { code: 428, message: 'Password is required' };
 		}
 
-		// Cek email sudah ada
-		const emailExist = await User.findOne({ email: req.body.email });
-		if (emailExist) {
+		// Cek email sudah ada menggunakan fungsi isEmailExist
+		const email = await isEmailExist(req.body.email);
+		if (email) {
 			throw { code: 409, message: 'EMAIL_EXIST' };
 		}
 
@@ -172,4 +201,4 @@ const refreshToken = async (req, res) => {
 	}
 };
 
-export { register, login, refreshToken };
+export { register, login, refreshToken, checkEmail };
